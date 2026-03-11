@@ -1,0 +1,44 @@
+1. What is a Dockerfile? How do you build a Docker image?
+A: Dockerfile containing a series of instructions on how to build a Docker image
+
+example: FROM - It is used to specify base image for our applications
+         WORKDIR - Sets the working directory
+         COPY - Copies files or directories form host machine to conatiner machine
+         RUN - execute a at the time of docker image creation
+         EXPOSE - informs DOcker about the port that the container listens on at runtime
+         CMD - Execute commands at the time of container creation.
+         USER - set user to run commands
+         ENV - to set env variables inside containers
+
+
+2. What is a Base Image?
+A: A Base image Provides an initial starting point to build your container images
+
+
+3. What is the difference between ENTRYPOINT and CMD in a Dockerfile? explain with example ?
+A: Both are used to start the application in the container when the container starts.
+CMD:
+  - CMD Defines default command and/or arguments to run inside the container. 
+  - Can be overridden at runtime by providing a new command.
+ENTRYPOINT
+  - Defines a fixed command that always runs.
+  - Arguments can be passed at runtime, but the command remains the same.
+
+4. Can we use CMD and ENTRYPOINT together in Dockerfile?
+A: Yes, we can use both CMD and ENTRYPOINT together in Dockerfile. CMD will be used to provide default arguments to the ENTRYPOINT. CMD can be overridden by providing arguments to ENTRYPOINT.
+ENTRYPOINT ["python"]
+CMD ["app.py""] 
+
+$ docker run myimage another_script.py
+
+
+5. what is the Difference between ADD and COPY in a Dockerfile ?
+A: COPY: Simply copies files and directories from the host to the container
+   ADD: More powerful. Can copy files and directories and also supports URL downloads and automatic extraction of compressed files.
+
+
+6. How do you tag a Container image? Why is tagging important?
+A: Tagging a container image is assigning a name and version label to an image so it can be easily identified, versioned, rollback and deployed.
+   Tagging Command: Use docker build -t imagename:tag . 
+
+7.
