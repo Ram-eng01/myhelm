@@ -20,7 +20,7 @@ A: Both are used to start the application in the container when the container st
 CMD:
   - CMD Defines default command and/or arguments to run inside the container. 
   - Can be overridden at runtime by providing a new command.
-ENTRYPOINT
+ENTRYPOINT:
   - Defines a fixed command that always runs.
   - Arguments can be passed at runtime, but the command remains the same.
 
@@ -41,4 +41,63 @@ A: COPY: Simply copies files and directories from the host to the container
 A: Tagging a container image is assigning a name and version label to an image so it can be easily identified, versioned, rollback and deployed.
    Tagging Command: Use docker build -t imagename:tag . 
 
-7.
+
+7. What is a multi-stage build, and how can it be used to reduce the size of a container image?
+A: A multi-stage build in Docker allows you to use multiple FROM statements in a single Dockerfile. Each FROM starts a new build stage, and you can copy only the necessary artifacts from earlier stages into the final image.
+   The main goal is to separate the build environment from the runtime environment, so the final container image contains only what is required to run the application.
+
+   Example: Multi-Stage Dockerfile:
+   Example with a Go application:
+   
+# Stage 1: Build the Go application
+FROM golang:1.16 AS builder
+WORKDIR /app
+COPY main.go .
+RUN go build main.go
+
+# Stage 2: Create a minimal image with the built binary
+FROM alpine:latest  # MINIMAL BASE IMAGE
+WORKDIR /root/
+COPY --from=builder /app/main . # COPY WHAT WE WANT!
+CMD ["./main"]
+
+8. Is it possible to make changes to an existing Container image? 
+A: Container images are immutable (read-only) — you cannot directly modify them.
+   There are two common ways to do this in Docker.
+   1. Create a New Image Using a Dockerfile
+   2. Modifications can be made to a running container and then committed to create a new image
+
+9. What is the purpose of the .dockerignore file?
+A: .dockerignore prevents specific files and directories from being copied into the Container image during the build and make image lightweight.
+
+10. What Are Alternatives to Writing Dockerfile?
+A: While Dockerfiles are the traditional way to build images in Docker, alternatives like Buildpacks, Jib, Buildah, and Nixpacks allow developers to automatically or programmatically create container images
+without writing Dockerfiles, simplifying builds and improving reproducibility.
+
+11. What is OCI and Why Is It Important?
+A: Open Container Initiative(OCI): Defines open, vendor-neutral specifications for containers
+   OCI provides the standard rules for building, running, and distributing containers, ensuring that containers work consistently across different platforms and tools.
+   OCI is Supported By Almost All Container Based Tools and Cloud Platforms: Docker, Podman, Buildpacks, Kubernetes, containerd, AWS, Azure, Google Cloud
+
+---------------- Managing Docker COntainers --------------------------------------
+Quick Review of Container Image Creation and Usage:
+
+1: Build Image: docker build -t my-app:0.1 .
+2: Push to Container Registry: docker push my-app:0.1
+3: Pull from Container Registry: docker pull my-app:0.1 [OPTIONAL]
+4: Run a Container: docker run my-app:0.1
+NOTE: If image does not exist on the host, daemon would pull the image first and then run it
+NOTE: A set of images are cached on the host. Daemon would check the cache before pull the image again.
+
+12. Explain important container management commands
+A: - docker pull <IMAGE_NAME>   ----> Download an public image from a Container registry.
+   - docker pull <IMAGE_NAME>:<SPECIFIC_VERSION>  -----> Download a specific version of a public image from a Container registry. 
+      Ex: docker pull node:24.01
+   - docker run -d -p <HOST_PORT>:<CONTAINER_PORT> <IMAGE_NAME>  -------> Runs a container in detached mode (container runs in the background) and maps a host port to a container port
+   - docker container ls    ----------------> List Currently Running Containers
+   - docker container ls -a   ----------------> List All Containers (Running + Stopped)
+   - docker container start <CONTAINER_ID or NAME> -------------> Starts a stopped container
+   - docker logs <CONTAINER_ID or NAME>   ---------> Fetches the logs of a container
+   - docker logs -f <CONTAINER_ID or NAME>  ---------> Fetches the logs of a container and follows the log output
+   
+   
