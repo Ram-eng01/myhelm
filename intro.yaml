@@ -1,0 +1,17 @@
+Good morning, and thank you for giving me this opportunity.
+
+My name is Rammohan, and I have around 4 years of experience working as a DevOps Engineer, Primarily focused on building scalabe CI/CD pipelines, automating infrastructure and improving deployment efficiency.
+
+In my current role, I work extensively with jenkins to design and manage CI/CD pipelines that automate the build,test and deployment process. I have integrated Jenkins with Git repositories to trigger pipelines
+automatically when developers push code,ensuring faster and more reliable release.
+For containerization and orchestration,  I have handson experience with Docker and Kubernetes, where I build Docker images and deploy applications into kubernetes clusters to support microservice-based achitecture.
+On the cloud side, I have experience working with AWS services such as ec2,S3,IAM, and VPC to manage infrastructure and application deployments. I also use Terraform as an infrastructure as a code tool to provision and manage 
+AWS resources, which helps mantain consistent environment and reduce manual configuration.
+
+Additionally, I have good experinece with Linux and shell scripting to automate operation tasks and improve system efficiency.
+In my projects, these automations practices helped reduce manual deployment effort and improved release reliability by implementing standardize CI/CD pipelines.
+
+I also collobarate closely with development, QA and operation teams to streamline the release process and ensure smooth deployments across environments.
+Overall, I am passionate about automation,improving infrastructure reliability, and enabling faster software delivery through DevOps practices.
+
+Thank you and I would be happy to discuss my experience in more detail.
