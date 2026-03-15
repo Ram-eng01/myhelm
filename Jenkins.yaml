@@ -1,1 +1,357 @@
+1. What is Jenkins?
+A: Jenkins is an open-source automation tool that helps in continuous integration and continuous delivery (CI/CD) of software projects. 
+   It automates the building, testing, and deployment of applications, allowing developers to integrate their code changes frequently and
+   detect issues early in the development process.
 
+2. What is CI/ CD?
+A: CI/CD is a DevOps practice that automates the software development lifecycle — from code integration to testing, and deployment — enabling faster, 
+   safer, and more reliable releases.
+
+   CI stands for continous integration which is a software developement practice where all the developers pushes their code in a centralized repository (git) 
+   where Every change is automatically built and tested to catch issues early.
+   CD – Continuous Delivery:
+   Every successfully tested change is automatically packaged and made ready for deployment to staging or production — manual approval can be added.
+   CD – Continuous Deployment (optional):
+   Extends Continuous Delivery by automating the deployment to production without manual approval.
+   Used when: Your team is confident in automated testing You want rapid, frequent releases (e.g., startups, microservices)
+
+3. Difference between continuous delivery and deployment ?
+A: Continuous Delivery: ✅ Code is always ready to deploy, but you choose when to release.
+   Continuous Deployment: 🚀 Every change that passes tests is automatically pushed to production — no buttons to press.
+
+   Example: Let’s say you fix a bug and push code:
+   -With Continuous Delivery: Jenkins runs build & tests Artifact is deployed to staging ✅ A team member reviews & clicks “Deploy to Production” With Continuous Deployment: 
+   Jenkins runs build & tests If all pass, 🚀 change goes directly to production.
+
+   The key difference is that Continuous Delivery automates up to staging and waits for manual approval before deploying to production, while Continuous Deployment skips
+   the manual step and pushes every change straight to production once it passes tests. I choose one over the other based on risk tolerance and business needs.”
+
+
+4. What are Jenkins plugins?
+A: Jenkins plugins are add-ons or extensions that enhance Jenkins' functionality. They allow Jenkins to integrate with other tools, add new features, and customize workflows
+   based on your needs.
+   
+5. What is a Jenkinsfile, and how is it different from traditional job configurations?
+A: A Jenkinsfile is a text file that contains the definition of a Jenkins pipeline. It allows you to define the entire CI/CD process as code, including stages, steps, and
+  conditions.  It enables Pipeline as Code, making CI/CD workflows version-controlled, reviewable, and reproducible.
+
+6. What is a Jenkins pipeline?
+A: A Jenkins pipeline is a way to define and manage the entire CI/CD process in code. It allows you to define the stages, steps, and conditions for your build, test, 
+   and deployment processes using a Jenkinsfile, which is written in Groovy. Pipelines provide better visibility, reusability, and version control for your CI/CD workflows.
+
+8. How does jenkins master and agent communicate ?
+A: Jenkins master and worker nodes communicate using protocols like SSH or JNLP. The master schedules and delegates jobs, while agents perform the job steps and return 
+   results. This master-agent model allows Jenkins to scale builds efficiently and isolate workloads.
+
+9. How can you secure Jenkins?
+A: 1.Use Role-Based Access Control (RBAC)
+   2.Keep Jenkins and Plugins Updated
+   3.Secure Secrets and Credentials
+      Use the Credentials Plugin to store API keys, tokens, passwords securely.
+      Avoid hardcoding secrets in Jenkinsfile.
+Use HTTPS: Configure Jenkins to run over HTTPS to encrypt data in transit.
+
+10. What Does "Poll SCM" Mean In Jenkins?
+A: In Jenkins, "Poll SCM" means that Jenkins will regularly check your Source Code Management (SCM) (like Git) for changes, at scheduled intervals, and if changes are found,
+   it will trigger a build.
+
+11. What is the difference between scripted and declarative pipelines in Jenkins?
+A: Declarative Pipeline is a simplified and opinionated syntax for defining CI/CD workflows in Jenkins, compared to Scripted Pipelines. 
+   It uses structured syntax and is easier to read, maintain, and validate.
+   Key Features:
+     Simplified Syntax: Easier to read and write compared to Scripted Pipelines.
+     Built-in Error Handling: Provides default error handling mechanisms.
+     Stage Visualization: Better visualization of stages in the Jenkins UI.
+     Validation: Syntax is validated before execution, reducing runtime errors.
+
+     pipeline {
+    agent any 
+    tools {
+        maven "maven3.9.9" // Ensure this matches the name in your Jenkins Global Tool Configuration
+    }
+
+    stages {
+        stage('Checkout Stage') { 
+            steps {
+                // Cloning the code from the GitHub repository
+                git branch: 'development', credentialsId: '8d341570-e046-4d2c-8060-33c3d5d493f7', url: 'https://github.com/gangavaramdevops/maven-web-app-project-kk-funda.git'
+            }
+        }
+
+        stage('Build') { 
+            steps {
+                // Building the project with Maven
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('SQReport') {
+            steps {
+                // Running the SonarQube analysis
+                sh 'mvn sonar:sonar'
+            }
+        }
+
+        stage('DeployToNexus') {
+            steps {
+                // Deploying the project to Nexus
+                sh 'mvn deploy'
+            }
+        }
+
+        stage('DeployAppToTomcat') {
+            steps {
+                // Deploying the WAR file to Tomcat
+                echo "Deploying WAR file to Tomcat..."
+
+                sh """
+                    curl -u kkfunda:kkfunda \
+                    --upload-file target/maven-web-application.war \
+                    "http://3.108.194.157:8080/manager/text/deploy?path=/maven-web-application&update=true"
+                """
+            }
+        }
+    }
+}
+
+Jenkins Scripted Pipeline is a powerful feature of Jenkins that allows you to define and automate your CI/CD (Continuous Integration and Continuous Delivery) workflows using
+Groovy scripting language.
+It provides:
+  Full access to programming constructs (e.g., if, for, variables)
+  The ability to create dynamic and conditional pipelines
+  High flexibility and customization, suitable for complex pipeline logic
+
+node {
+    // Fetch the Maven installation path configured in Jenkins
+    def mavenHome = tool name: "maven3.9.9"
+
+    // Stage 1: Git Checkout
+    stage('git checkout') {
+        git branch: 'development',
+            credentialsId: '8d341570-e046-4d2c-8060-33c3d5d493f7',
+            url: 'https://github.com/gangavaramdevops/maven-web-app-project-kk-funda.git'
+    }
+
+    // Stage 2: Build the application
+    stage('Build') {
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+
+    // Stage 3: SonarQube Code Quality Report
+    stage('SQ Report') {
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+    }
+
+    // Stage 4: Upload to Nexus Repository
+    stage('Deploy into Nexus') {
+        sh "${mavenHome}/bin/mvn clean deploy"
+    }
+
+    // Stage 5: Deploy WAR to Tomcat using curl
+    stage('Deploy to Tomcat') {
+        echo "Deploying WAR file using curl..."
+
+        sh """
+            curl -u kkfunda:kkfunda \
+            --upload-file /var/lib/jenkins/workspace/jio-scripted-way-pipeline-develoment/target/maven-web-application.war \
+            "http://3.108.194.157:8080/manager/text/deploy?path=/maven-web-application&update=true"
+        """
+    }
+} // node closing
+
+
+ 12. How can you parameterize Jenkins jobs to make them more flexible?
+ A: Jenkins allows you to parameterize your jobs, which enables you to provide inputs or options when triggering the job. You can add parameters such as strings, Boolean
+    values, choice parameters, or even file uploads. This makes the job more flexible and reusable as it can be configured differently each time it is triggered.
+
+13.Explain the concept of Jenkins distributed builds and how they can be set up?
+A: Jenkins distributed builds allow you to distribute the execution of jobs across multiple machines, known as Jenkins agents. This enables parallel execution of jobs and
+   improves overall build capacity. To set up distributed builds, you need to configure Jenkins agents and connect them to the Jenkins master. Agents can be set up on 
+   different physical or virtual machines and can be dedicated or shared among multiple projects.
+
+14. How can you achieve high availability and scalability in a Jenkins setup?
+A: To ensure Jenkins is highly available and scalable, especially in enterprise environments, we follow a combination of architectural best practices:
+    1.Master-Agent Architecture (Horizontal Scaling)
+    2.Load Distribution
+      Distribute jobs across agents to avoid overloading the Jenkins controller.
+    3. Backup and Restore
+    4.Scalable Cloud Agents
+      Jenkins spins up a pod/EC2 agent when a job is triggered and destroys it after use.
+    5.Monitoring and Alerts
+      Monitor Jenkins performance using tools like:
+        Prometheus + Grafana
+        Jenkins Metrics plugin
+      Set alerts for high CPU, disk usage, or job queue spikes.
+
+15. What is Jenkins Pipeline Shared Library, and how do you use it?
+A: Jenkins Pipeline Shared Library allows you to define reusable code and functions that can be shared across multiple pipelines. It enables you to centralize common
+  pipeline logic, promote code reuse, and maintain consistency across projects. To use a Shared Library, you define it in a separate repository, configure Jenkins to
+ load the library, and then use the library functions in your Jenkins pipelines.
+
+
+16. How can you implement Jenkins pipeline parallelization and what are the considerations?
+A:  Jenkins pipeline parallelization allows you to run multiple stages or tasks at the same time instead of sequentially. This speeds up pipelines by 
+    utilizing multiple agents or cores efficiently — especially for independent tasks like testing, building, or deploying in parallel.
+pipeline {
+    agent any
+
+    stages {
+        stage('Parallel Stages') {
+            parallel {
+                stage('Stage A') {
+                    steps {
+                        echo 'Running Stage A...'
+                        sh 'sleep 5'
+                    }
+                }
+                stage('Stage B') {
+                    steps {
+                        echo 'Running Stage B...'
+                        sh 'sleep 5'
+                    }
+                }
+            }
+        }
+    }
+}
+
+17. can parallelization work on same agent or need different agent?
+A:Yes, parallel stages can run on the same agent, but: They will run serially if there's only one executor available. To run truly in parallel, you need either: An agent
+  with multiple executors, or Multiple agents (worker nodes) in Jenkins.
+
+18. What are Jenkins pipeline stages and how can you control their execution?
+A: Stages in Jenkins pipelines represent distinct phases of the CI/CD process, such as build, test, deploy, and so on. Stages provide a structured way to
+  visualize and control the pipeline flow. You can define stages using the stage directive in a Jenkinsfile and configure their execution order.
+
+19. How can we use conditions in pipeline for example we have multiple branches and we want that build stage only run on dev branch?
+A: You can use the when block with the branch condition inside a stage to control its execution
+
+pipeline {
+  agent any
+  stages {
+    stage("checkout"){
+      steps {
+        git branch: 'dev', url: 'https://github.com/your-repo.git'
+      }
+    }
+    stage('Build') {
+      when {
+        branch 'dev' // 👈 Only run this stage on dev branch
+       } 
+       steps {
+        echo 'Building the application for dev branch...'
+         // Your build commands go here
+      }
+    }
+    stage('Test') {
+       steps {
+       echo 'Running tests...'
+      }
+    }
+  }
+}
+
+---------------
+
+stage('Build') {
+    when {
+        anyOf {
+            branch 'dev'
+            branch 'feature/*'
+        }
+    }
+    steps {
+        echo 'Building for dev or feature branch'
+    }
+}
+ Example with Multiple Branch Conditions:
+
+
+20. What is Blue Ocean in Jenkins, and how does it enhance the user interface?
+A: Blue Ocean is a plugin for Jenkins that provides a modern, intuitive, and user-friendly interface for visualizing and managing Jenkins pipelines. It offers a more
+  streamlined and graphical representation of pipelines, with a visual editor for creating and modifying pipelines. Blue Ocean enhances the user experience by providing 
+  better visualization, easier navigation, and improved pipeline status tracking.
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+1.What is Jenkins?
+A: Jenkins is an open-source automation tool design for continuous integration and continuos delivery(CI/CD)
+- It automates tasks like building, testing, and deploying code, triggered by events such as commits, branch updates, or pull requests.
+
+2.What is jenkins USed for?
+A:  - Build Automation: Jenkins automates the building of software projects, ensuring consistent and reliable results.
+    - Testing: It integrates with testing tools to automatically execute tests and validate code changes.
+    - Deployment: Jenkins simplifies the deployment of applications across different environments.
+    - CI/CD Pipelines: It orchestrates continuous integration and delivery pipelines, streamlining the software delivery process.
+    - Workflow Management: Jenkins handles complex workflows across multiple stages of development.
+    - Tool Integration: It integrates seamlessly with tools like Git, Maven, Docker, and Kubernetes, covering all phases of the software development lifecycle.
+    - Monitoring and Reporting: Jenkins monitors builds and deployments, providing detailed reports on successes, failures, and performance metrics.
+
+
+3: CONTINUOUS INTEGRATION:
+A: It is the combination of continuous build and continuous test.
+      CONTINUOUS INTEGRATION = CONTINUOUS BUILD + CONTINUOUS TEST
+Whenever a developer commits the code using source code management like GIT,then the CI pipeline gets the changes of the code runs automaticaly build and unit test. 
+Due to integrating the new code with old code, we can easily get to know the
+- code is a success or failure. 
+- It finds the errors more quickly
+- Delivery the products to client more frequently
+- Developers don't need to manual tasks 
+- Reduces the developers time 20% to 30
+
+4. CONTINUOUS Delivery?
+A: CD typically involves a manual approval step before releasing builds to production, adding an extra layer of control.
+
+5. CONTINUOUS Deployment?
+A: Continuous Deployment is when you commit your code then it gets automaticaly tested, build and deploy on the production server
+
+6. what is a PLUGIN?
+A: It is small software which is used to add extra features for our jenkins dashboard.
+   used plugins:
+      - Deploy to container
+      - Thin Backup
+      - Nexus artifact uploder
+
+
+7. Jenkins Default Path?
+A:  /var/lib/jenkins 
+    /var/lib/jenkins/workspace  ---> files
+
+8. Jenkins has to trigger the build automatically. To implement it we can use the below concepts
+A: 1.Webhooks
+   2.Poll SCM
+   3.Build Periodically
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What stages or jobs would you recommend in a CI/CD pipeline?
+Have you used any static code analysis tools?
+What does agent any mean in a Jenkins pipeline?
+Can we run a stage on a specific agent?
+What is a label in Jenkins?
+Can we run parallel stages in Jenkins?
+How do you manage secrets in CI/CD without exposing credentials?
+how do you ensure the test job runs only after a successful build?
