@@ -104,11 +104,7 @@ A: Declarative Pipeline is a simplified and opinionated syntax for defining CI/C
                 // Deploying the WAR file to Tomcat
                 echo "Deploying WAR file to Tomcat..."
 
-                sh """
-                    curl -u kkfunda:kkfunda \
-                    --upload-file target/maven-web-application.war \
-                    "http://3.108.194.157:8080/manager/text/deploy?path=/maven-web-application&update=true"
-                """
+                
             }
         }
     }
@@ -272,7 +268,15 @@ A: Blue Ocean is a plugin for Jenkins that provides a modern, intuitive, and use
   streamlined and graphical representation of pipelines, with a visual editor for creating and modifying pipelines. Blue Ocean enhances the user experience by providing 
   better visualization, easier navigation, and improved pipeline status tracking.
 
+21. How can you secure sensitive information, such as credentials, in Jenkins pipelines?
+A: In Jenkins, sensitive information like passwords, API tokens, SSH keys, and secret files should never be hardcoded in pipelines. Instead,
+   we use the Credentials Plugin to securely store and access them.
+    Steps to Secure Credentials in Jenkins:
+1.Use Jenkins Credentials Manager
+2.Access Credentials in Declarative Pipelines
+3.Restrict Access
 
+22.
 
  
 
