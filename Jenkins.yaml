@@ -323,9 +323,52 @@ def rollbackToPreviousDeployment(environment) {
 
 
 
- 
+25. What does agent any mean in a Jenkins pipeline?
+A: Jenkins can run this pipeline on any available agent in the Jenkins cluster
+
+26. Can we run a stage on a specific agent?
+A: Yes — in Jenkins Pipelines, you can run a specific stage on a specific agent by defining an agent block inside that stage.
+   This is useful when different stages need different environments (Linux, Windows, Docker, special tool nodes, etc.).
+   
+   pipeline {
+    agent any   // default for all stages
+
+    stages {
+        stage('Build') {
+            steps {
+            sh 'make build'
+            }
+        }
+
+        stage('Test on Linux Node') {
+            agent { 
+              label 'linux'  // specific agent
+             }   
+            steps { 
+              sh 'make test'
+            }
+        }
+    }
+}
+
+27. What is a label in Jenkins?
+A: In Jenkins, a label is a tag or identifier assigned to an agent (node) that helps Jenkins decide where a job or pipeline stage should run.
+   It is used to target specific machines with required resources, tools, or operating systems.
+
+28. What are the default variables in Jenkins?
+A: In Jenkins pipelines, default variables (also called environment variables) are automatically provided by Jenkins during a build.
+   They give information about the job, build, workspace, Git repository, and environment.
+   You can access them using env.VARIABLE_NAME in a pipeline.
+    examples: BUILD_NUMBER,BUILD_ID,BUILD_URL,JOB_NAME,JOB_URL,GIT_BRANCH,GIT_COMMIT,GIT_URL,GIT_PREVIOUS_COMMIT.
 
 
+29. Explain how CI/CD works end-to-end in a production environment.
+A: In a production CI/CD pipeline, developers push code to a Git repository, which triggers a CI server like Jenkins through webhooks. The pipeline then checks out
+the code, builds the application, runs automated tests, performs security and quality scans, creates artifacts, and pushes container images to a registry. The CD pipeline 
+then deploys the application to staging for validation and finally to production using strategies like rolling or blue-green deployments while monitoring the system with 
+tools like Prometheus and Grafana.
+
+30.
 
 
 
