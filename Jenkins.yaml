@@ -276,7 +276,52 @@ A: In Jenkins, sensitive information like passwords, API tokens, SSH keys, and s
 2.Access Credentials in Declarative Pipelines
 3.Restrict Access
 
-22.
+22. Can you explain a complex Jenkins pipeline you've designed or worked on in the past, highlighting the specific challenges you faced and how you resolved them?
+A: Challenge: Too Much YAML/Script Duplication Cause: Services repeated the same steps (build → test → push).
+   Solution: Extracted common steps into shared Groovy libraries (vars/buildDocker.groovy) and called them from pipeline.
+
+   Challenge: Long Build Times (15+ minutes) Cause: Building and testing many services serially.
+   Solution: Used parallel blocks to build/test services concurrently. Reduced average time from 15 to ~6 minutes.
+   Let’s say you have three microservices: service-a service-b service-c Each one has its own build and test commands.
+    If you run them one after another, total build time = sum of all durations.
+    If each service takes 5 minutes: Serial: 5 + 5 + 5 = 15 minutes Parallel: max(5, 5, 5) = 5 minutes
+
+23. What is executor ?
+A: Executor = How many builds Jenkins can run at once on a machine.
+   If a computer has 2 executors, it means it can run 2 builds at the same time. If it has 1 executor, it can only do one build at a time — others wait their turn.
+
+24. You have a Jenkins pipeline that deploys your application to multiple environments, and you want to automatically rollback to the previous deployment if the current 
+    deployment fails. How can you achieve this?
+A:  Within your Jenkins pipeline, you can use a try-catch block to catch any errors that occur during the deployment process. In the catch block, you can implement the
+    rollback logic to revert to the previous deployment. Here's an example of how the script could look like:
+    pipeline {
+stages {
+stage('Deploy') {
+steps {
+script {
+try {
+// Deployment logic
+deployToEnvironment('production')
+} catch (Exception e) {
+// Rollback logic
+rollbackToPreviousDeployment('production')
+}
+
+}
+}
+}
+}
+}
+def deployToEnvironment(environment) {
+// Deployment code specific to the environment
+// ...
+}
+def rollbackToPreviousDeployment(environment) {
+// Rollback code specific to the environment
+// ...
+}
+
+
 
  
 
