@@ -368,8 +368,32 @@ the code, builds the application, runs automated tests, performs security and qu
 then deploys the application to staging for validation and finally to production using strategies like rolling or blue-green deployments while monitoring the system with 
 tools like Prometheus and Grafana.
 
-30.
+30. Tell me 5 build targets that you use with maven frequently?
+A: In my day-to-day DevOps work, especially while integrating Java applications with CI/CD pipelines, I frequently use the following Maven build targets:
+  First, mvn clean, which removes previous build artifacts from the target directory to ensure a fresh build environment.
+  Next is mvn compile, which compiles the application source code and verifies there are no compilation errors early in the pipeline.
+  Then I use mvn test, which runs automated unit tests written using frameworks like JUnit to validate the application functionality.
+  After that, mvn package creates the deployable artifact such as a JAR or WAR file, which we usually use for containerization or deployment.
+  Finally, mvn install stores the artifact in the local Maven repository so it can be reused by other dependent builds.
+In CI/CD environments using tools like Jenkins, we commonly run commands like mvn clean package or mvn clean install to automate the build and artifact generation process before moving to stages like Docker
+image creation and deployment.
 
+31. which artifact repository do you use for builds?
+A: In our projects, we use Sonatype Nexus Repository as the artifact repository for managing build artifacts.
+   After the build process completes in our CI/CD pipeline using Jenkins, the generated artifacts such as JAR or WAR files from Apache Maven are uploaded to Nexus.
+    Nexus acts as a centralized artifact repository, which helps us:
+     - Store versioned build artifacts
+     - Manage dependencies and third-party libraries
+   Typically, we configure Nexus repository details in the Maven pom.xml or settings.xml, so during the build process Maven automatically pushes the artifact to Nexus.
+
+32. Build passed locally but fails in CI, how will you troubleshoot?
+A: 1. Consloe CI Logs ---> Build failure
+   2. Dependency check --> mvn clean 
+   3. Environment Variables
+   4. File permision --> check the jenkins has file permision.
+   5. windows or linus --> check OS, distribution.
+   
+33.
 
 
 
