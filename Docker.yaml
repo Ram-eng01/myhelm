@@ -99,5 +99,97 @@ A: - docker pull <IMAGE_NAME>   ----> Download an public image from a Container 
    - docker container start <CONTAINER_ID or NAME> -------------> Starts a stopped container
    - docker logs <CONTAINER_ID or NAME>   ---------> Fetches the logs of a container
    - docker logs -f <CONTAINER_ID or NAME>  ---------> Fetches the logs of a container and follows the log output
-   
-   
+
+
+13. Why is Data Persistence needed for Containers?
+A:
+Ephemeral Nature of Containers: Containers are designed to be short-lived. Data inside a container is lost when it restarts or terminates
+Stateful Applications Need Persistence: Applications like databases, file storage systems, and message brokers need to retain their state across restarts or crashes
+Data Retention: Critical data—such as user sessions, configurations, and transactions—must survive beyond the lifecycle of individual containers
+Backup and Recovery: Persistent storage enables backup strategies and ensures data can be recovered after failure
+Example Usecases:
+Running MySQL, PostgreSQL, or MongoDB in a container
+Web app that allows users to upload profile pictures or documents
+Shopping cart in an e-commerce containerized frontend
+Microservice logging activity data
+
+14. What is a Volume in Docker?
+A: 
+Volumes:
+Ephemeral Nature of Containers: Containers are designed to be short-lived. Data inside a container is lost when it restarts or terminates
+Volumes provide persistent storage: Data survives container restarts and removals
+Volumes enable Data sharing: Multiple containers can access the same volume, enabling shared data
+Types of Volumes in Docker:
+1) Named Volumes: Have a specific name assigned to them when created
+
+Command: Created using command docker volume create <volume-name> or automatically when a container specifies a volume that Docker hasn't created yet
+docker volume create volume_name #OPTIONAL!
+docker run -d -v volume_name:/path/in/container my_image:tag
+
+2) Anonymous Volumes: Created and managed by Docker and don't have a user-assigned name
+Usage: Temporary or throwaway data during container runtime.
+Used when volume re-usability is NOT important.
+Command: Automatically created when a container specifies a volume destination without explicitly creating a named volume
+docker run -d -v /path/in/container my_image:tag
+
+15. Explain Commands used to manage Volumes?
+A: 
+Create: Create a Named Volume
+$ docker volume create project_data_volume
+
+Lists: Lists all Docker volumes
+$ docker volume ls
+
+Inspection: Returns detailed information about a Docker volume in JSON format
+$ docker volume inspect <VOLUME_NAME>
+
+Remove a Specific Volume: Deletes a specified Docker volume
+$ docker volume rm <VOLUME_NAME>
+
+Remove All Unused Volumes: Removes all volumes that are not currently used by any container
+$ docker volume prune
+
+16. Explain Bind Mounts with an example?
+A: 
+Bind mounts: Allow us to mount a directory or file from the host machine into a container
+Path linking: Links to a specific path on the host filesystem
+Flexibility: Offers direct access to host files, ideal for development and local testing
+Use case: Real-time data sharing between host and container
+Command:
+docker run -d -v /host/path:/container/path my_image:tag
+
+Example:
+
+Web Development: Developing a website locally using Docker containers and website files are stored on your host machine at /tmp/website & any changes made on your host to be instantly visible in the container running your web server
+Command:
+mkdir /tmp/website
+
+# Run the Apache Container
+docker run -d --name my_apache \
+-v /tmp/website:/usr/local/apache2/htdocs \
+-p 8080:80 \
+httpd:latest
+
+# Check if Apache is serving the page
+curl http://localhost:8080
+
+# Edit the index.html file on the host
+echo "<h1>Apache Server Updated - Live Changes</h1>" > \
+/tmp/website/index.html
+
+# Verify Changes with curl
+curl http://localhost:8080
+
+# Verify Inside the Container
+docker exec -it my_apache /bin/sh
+
+# Try to read the index.html file
+cat /usr/local/apache2/htdocs/index.html
+
+
+17. Docker Volumes vs Bind Mounts 
+Feature / Use Case	             Docker Volumes	                                                                                        Bind Mounts
+Definition	                 Managed by Docker: Stored in Docker's internal storage (usually under /var/lib/docker/volumes/).	     Directly map a file or directory from the host filesystem into the container.
+Management	                 Managed by Docker	                                                                                      Not managed by Docker – Does NOT have docker volume ls or inspect visibility.
+Portability & Isolation	        Portable and isolated from host filesystem. Easy to backup, inspect, and share across containers.	     Tightly coupled with host. Changes on host are reflected in container and vice versa.
+Use Cases	                 Databases (e.g., MySQL, Postgres) storing data.	                                                  Mounting source code during development; live file editing workflows.
