@@ -15,3 +15,59 @@ I also collobarate closely with development, QA and operation teams to streamlin
 Overall, I am passionate about automation,improving infrastructure reliability, and enabling faster software delivery through DevOps practices.
 
 Thank you and I would be happy to discuss my experience in more detail.
+
+
+
+
+1. What is DevOps?
+
+A:  DevOps is the process of  building, deploying and testing the applications continuosly. basically if we can deploy and test the code on the  same  day we can get maximum feedback cycles to improve our product...
+    we use multiple tools to make this process smooth. continuos development, integration, deployment, delivery, testing, monitoring, application security etc part of devops
+
+
+2. What is SDLC?
+
+A: Software Development life cycle (SDLC) is a step-by-step process that guides how software is designed, created, tested, and delivered. It's  like  a roadmap that leads the development team through each step, ensuring the final product meets the desired requirements.
+
+The Software Development Life Cycle defines how ideas move from requirements to running software. In modern Agile/DevOps, this flow is iterative, automated, and feedback-driven rather than a rigid one-way process.
+    1. requirement gathering : Define what the system must achieve.
+    2. Design : Decide how the system should function and interact.
+    3. Development : Implement features and functionality as per design.
+    4. Build : Compile code, resolve dependencies, and create deployable artifacts.
+    5. Testing (Continuous) : Validation happens throughout, not just once.
+    6. Deployment : Promote software safely across environments.
+    7. Operate & Maintain : Ensure reliability, security, and efficiency after go-live.
+    8. Feedback & Improve (Continuous) : Learn from signals and evolve the system.
+
+
+
+3.Waterfall vs Agile/DevOps
+Waterfall model : A traditional, linear approach where work flows downward like a waterfall.
+
+- Each phase (Requirements → Design → Development → Testing → Deployment) must be completed before the next begins.
+- Feedback is delayed — bugs or design gaps are often discovered only at the end, when fixing them is expensive and slow.
+- Example: A bank builds a new system over 12 months; only at the end of the year do testers (and customers) see the first working product.
+
+Agile + DevOps approach – A modern, iterative approach where work is broken into small increments.
+
+- Developers push small, frequent changes rather than big releases.
+- Testing, security, and deployment are automated so teams get feedback early (in minutes or hours, not months).
+- Example: Netflix or Amazon push hundreds of updates daily — often invisible to end users — making delivery faster, safer, and more resilient.
+
+
+3. Client and server archetechture ?
+A: Client–Server architecture is a model where the client sends requests and the server processes them and returns responses over a network. It is commonly used in web applications where browsers act as clients and web servers handle requests.
+
+4. What is authentication ?
+A: Authentication is the process of verifying the identity of a user using credentials like username, password, OTP, or tokens before granting access to a system.
+
+
+
+5.How long have you been with TCS and what type of projects have you done?
+
+
+
+
+REST API  Calling methods
+----------------
+PUT, POST, GET, DELETE
