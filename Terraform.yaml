@@ -1,0 +1,97 @@
+1) What is Terraform?
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. It allows DevOps engineers to define and provision data center infrastructure using 
+a high-level configuration language known as HCL (HashiCorp Configuration Language).
+Terraform manages both low-level components (e.g., compute, storage, networking) and high-level components (e.g., DNS, SaaS features) across multiple cloud providers and 
+services.
+Key Capabilities
+•	Declarative Syntax: Describe the desired state and let Terraform manage the changes.
+•	Multi-Cloud Support: Works with AWS, Azure, GCP, VMware, Kubernetes, and over 1000+ providers.
+•	Provisioning: Creates, updates, and deletes infrastructure automatically.
+•	State Management: Tracks infrastructure with a state file.
+•	Modules: Reusable components for standard infra patterns.
+•	Plan & Apply: Shows what will happen before executing it (safe infrastructure changes).
+
+2) What’s a Terraform State file, and why is it important? 
+
+The Terraform State file (terraform.tfstate) is like Terraform’s memory. It keeps track of the real-world infrastructure you’ve deployed, mapping your configuration to 
+the actual resources. Whenever you apply changes, Terraform compares your .tf files to the state file to see what’s already been deployed and what needs updating.
+That’s why it’s super important to keep your state file safe and secure, especially if you’re working in a team.
+Many folks use remote state backends like AWS S3 with DynamoDB for state locking to avoid conflicts.
+
+3) What are providers in Terraform?
+Terraform Providers are like plugins that let Terraform interact with specific cloud providers or services.
+ For example, if you’re working with AWS, you’ll use the AWS provider to manage your resources. Each provider has its own set of resources and data sources you can use. 
+In your Terraform configuration, you’ll specify the provider and version you want to use, like this:     
+provider "aws" { 
+    region = "us-west-2"
+     version = "~> 4.0"
+ } 
+This tells Terraform to use the AWS provider and stick to a version in the 4.x series. The cool part? Terraform supports tons of providers,
+so you can manage everything from cloud infrastructure to DNS records with the same tool.
+
+4) What are resources and data sources?
+
+Resources are real infrastructure objects that Terraform creates, updates, or deletes in the cloud.
+
+
+A Data Source in Terraform lets you fetch information from your infrastructure or cloud provider that you can use elsewhere in your configuration. 
+For example, if you need to use the latest AMI for an EC2 instance, you can use a data source to dynamically pull that information: 
+data "aws_ami" "latest_ami" { most_recent = true owners = ["amazon"] filter { name = "name" values = ["amzn2-ami-hvm-*-x86_64-gp2"] } } resource "aws_instance" "my_instance" { ami = data.aws_ami.latest_ami.id instance_type = "t2.micro" } In this example, Terraform looks up the latest Amazon Linux 2 AMI and uses it to create an EC2 instance. Data sources are super handy for making your Terraform code more dynamic and flexible.
+
+5) What’s Terraform Plan, and why should you use it? 
+
+terraform plan is like a dry run before you make changes to your infrastructure. When you run it, Terraform tells you what it’s going to do without actually making any 
+changes. It shows you a detailed execution plan, highlighting what will be created, updated, or destroyed. This is super useful for catching mistakes before they happen.
+Always run terraform plan before terraform apply to make sure everything looks good.
+
+6) What are Terraform Modules, and why are they useful?
+Terraform modules are reusable, self-contained packages of Terraform configurations that simplify infrastructure management. Modules enable code reusability, maintainability,
+and scalability, making complex AWS deployments more efficient.
+If you’re deploying the same type of resource across multiple projects, you can create a module for it. For example, you might have a module for setting up an EC2 instance
+with all your standard settings. Then, instead of copying and pasting that code into every project, you just call the module.
+
+7) How do you manage sensitive data in Terraform?
+ Sensitive data in Terraform, like API keys or passwords, should never be hardcoded into your .tf files. Instead, you can use Terraform’s sensitive flag with variables or
+ store the sensitive data in environment variables or a secrets management service like AWS Secrets Manager or HashiCorp Vault.
+ Here’s how you’d define a sensitive variable: variable "db_password" { description = "The database password" type = string sensitive = true } When you mark a variable as
+ sensitive, Terraform will hide its value in logs and outputs. It’s a simple but crucial step for keeping your infrastructure secure.
+ 
+8) How does Terraform handle dependencies between resources? 
+Terraform automatically handles dependencies between resources by analyzing the configuration graph. For instance, if you create a VPC and then create subnets within that VPC,
+Terraform knows that the VPC needs to be created before the subnets. You don’t need to explicitly define these dependencies, but you can if needed using the 
+depends_on argument. 
+Here’s an example: resource "aws_instance" "my_instance" { ami = "ami-12345678" instance_type = "t2.micro" depends_on = [aws_security_group.my_sg] } This tells Terraform, “Make sure the security group is created before the instance.” It’s a way to ensure resources are provisioned in the right order.
+
+9) What’s the difference between terraform apply and terraform destroy?
+
+ terraform apply is the command you use to make changes to your infrastructure. It looks at your .tf files and compares them to the state file, then makes whatever changes 
+ are needed to match your desired state. terraform destroy, on the other hand, is used to tear everything down. It removes all the resources defined in your
+ Terraform configuration. This is useful when you’re done with an environment and want to clean up. Just be careful with terraform destroy — once those resources are gone, 
+ they’re gone for good!
+
+10) How do you use Terraform Workspaces?
+Terraform Workspaces are like separate work environments within the same Terraform configuration. They allow you to manage multiple instances of your infrastructure in a
+single configuration. For example, you might use different workspaces for different environments like dev, staging, and prod. Here’s how you create and switch between 
+workspaces: 
+terraform workspace new dev
+ terraform workspace select prod 
+Each workspace has its own state file, so changes in one workspace won’t affect others. It’s a handy way to keep things organized without duplicating code.
+
+11) What’s a Backend in Terraform, and why is it important? 
+A Backend in Terraform determines where and how your state file is stored. By default, Terraform stores the state file locally, but in a team setting, you’ll want to store
+it remotely to avoid conflicts. Popular backend options include AWS S3, Azure Blob Storage, and HashiCorp Consul. 
+Here’s an example of configuring a remote backend using AWS S3: terraform { backend "s3" { bucket = "my-terraform-state" key = "global/s3/terraform.tfstate" region = "us-west-2" } } This setup ensures that your state file is securely stored in S3 and is accessible to everyone on your team. It also enables state locking, so only one person can run terraform apply at a time, preventing race conditions
+
+12) What’s Terraform Taint, and when should you use it? 
+
+terraform taint is a command that marks a resource for destruction and recreation on the next terraform apply. This is useful when a resource is in a bad state, 
+and you want to force Terraform to rebuild it. Here’s how you use it: terraform taint aws_instance.my_instance The next time you run terraform apply, 
+Terraform will destroy the my_instance resource and create a new one. This is a handy tool for fixing issues without manually deleting resources.
+
+13) What’s the difference between Terraform’s count and for_each?
+
+count and for_each are both used to create multiple instances of a resource, but they work differently. count is simpler and creates a specific number of resources, 
+while for_each is more flexible and allows you to create resources based on a set of unique identifiers. 
+Here’s an example with count: resource "aws_instance" "my_instance" { count = 3 ami = "ami-12345678" instance_type = "t2.micro" }
+And here’s an example with for_each: resource "aws_instance" "my_instance" { for_each = toset(["web1", "web2", "web3"]) ami = "ami-12345678" instance_type = "t2.micro" tags = { Name = each.key } }
+ for_each is more powerful because it allows you to create resources based on a set of values, making your configurations more dynamic.
