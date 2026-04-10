@@ -1,0 +1,92 @@
+1. What is the difference between git fork and git clone?
+A:  Git Clone creates a copy of the repository in your local machine and you can pull and push changes to the remote repository.
+
+    Fork is useful when you want to contribute to the original repository.Fork creates a copy of the repository in your GitHub account. You can make changes and raise a pull request to the original repository.This is helpful when you are working on open-source projects.
+
+2. Explain a scenario where you used git fork instead of git clone. Why was forking necessary?
+A:  I used git fork when I contributed to a DevOps project in my org on GitHub. Since I didn’t have write access to the original repository, I forked it into my GitHub account, made changes, and then created a pull request from my fork to the upstream repo.
+
+3. What is the difference between git fetch and git pull?
+A:  Git Fetch will fetch the changes from the remote repository to your local repository but it will not merge the changes to your local repository. You need to merge the changes manually by running git merge origin/<branch>. 
+
+    Git Pull = Git Fetch + Git Merge. Git Pull will fetch the changes from the remote repository and merge the changes to your local repository.
+
+4. What is Git Merge?
+A: Git Merge is used to merge the changes from one branch to another branch. You can merge the changes from the feature branch to the main branch. The main advantage of Git Merge is that it will not alter the commit history. But if you perform too many merges, it will create a lot of merge commits which will make the commit history complex.
+
+5. Git Rebase?
+A: Git Rebase is used to merge the changes from one branch to another branch. You can merge the changes from the feature branch to the main branch. The main disadvantage of Git Rebase is that it will alter the commit history. It will make the commit history linear. But if you perform too many rebases, it will create a lot of conflicts which will make the commit history complex.
+The MAIN GOLDEN RULE of rabase is "NEVER REBASE A PUBLIC REPO USED BY MULTIPLE PEOPLE".
+
+6. What is the difference between git rebase and git merge?
+A: Both achieve the same goal of merging the changes from one branch to another branch. But Git Merge will not alter the commit history. But Git Rebase will alter the commit history. Git Rebase is used to make the commit history linear.
+
+7. Explain the Git branching strategy you used in your company.?
+A:  
+
+
+
+8.How do you handle merge conflicts in Git?
+
+A: Merge conflicts usually happen when:
+   Two branches modify the same lines in a file
+   One branch deletes a file the other modifies
+
+9. Have you ever used Git tags? If yes, why?
+A: Yes, I’ve used Git tags primarily to mark release versions of our applications. It helps track which commit corresponds to a production deployment, and makes it easier to roll back or audit changes when needed.
+    git tag -a v1.0.3 -m "Release version 1.0.3 with critical bug fixes"
+    git push origin v1.0.3
+
+
+10. How do you combine multiple commits into a single commit in Git?
+
+A: Git Squash is used to combine multiple commits into a single commit. It can be used with interactive rebase.
+
+git rebase -i HEAD~4
+  This opens an editor with the last 4 commits:
+  I change all but the first pick to squash or s:
+  Then I write a new commit message when prompted, save, and exit.
+  git push origin branch-name --force
+  for example: check abhishek git hub
+
+
+11. What is Git Cherry-Pick?
+A: git cherry-pick <commit-hash>
+Git cherry-pick is a command in Git that allows you to take a specific commit from one branch 
+and apply it to another branch. It's like picking a cherry (commit) from one branch and adding 
+it to another branch, allowing you to selectively copy individual commits without merging the 
+entire branch This is useful when you want to apply a specific commit to the current branch for hotfixes.
+
+12. What is GIT Amend?
+A: GIT AMEND: it is a Git command used to make changes to the most recent Git commit. It 
+allows you to edit the commit message, add additional changes, or both
+
+13. What is GIT reset?
+A: GIT RESET: is a command in Git that allows you to move the HEAD and the current branch 
+pointer to a specific commit, effectively "rewinding" or "resetting" your project's state. It's 
+commonly used to undo changes or to unstage commits
+
+  Example: refer Git sheet
+
+14. What is GIT Revert?
+A: GIT REVERT: used to delete a particular commit action 
+and creates a new commit that undoes the changes introduced by the 
+specified commit, effectively taking your code back to a previous state without deleting 
+commit history
+
+
+15. What is git stash ?
+A: GIT STASH:  Using the git stash command, developers can temporarily save changes made 
+in the working directory. It allows them to quickly switch contexts when they are not quite 
+ready to commit changes. And it allows them to more easily switch between branches.
+Generally, the stash's meaning is "store something safely in a hidden place."
+
+16.
+
+
+
+11. who, why, when, what
+
+
+1.Explain branching and merging strategies in Git.
+2.What would you do if there is a merge conflict?
